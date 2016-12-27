@@ -116,14 +116,14 @@ static int lept_parse_string(lept_context* c, lept_value* v) {
                     case 't':  PUTC(c, '\t'); break;
                     default:
                         c->top = head;
-                        return LEPT_PARSE_INVALID_STRING_ESCAPE;
+                        return LEPT_PARSE_INVALID_STRING_ESCAPE;//不合法转义
                 }
                 break;
             case '\0':
                 c->top = head;
                 return LEPT_PARSE_MISS_QUOTATION_MARK;
             default:
-                if ((unsigned char)ch < 0x20) { 
+                if ((unsigned char)ch < 0x20) { //不合法的字符
                     c->top = head;
                     return LEPT_PARSE_INVALID_STRING_CHAR;
                 }
