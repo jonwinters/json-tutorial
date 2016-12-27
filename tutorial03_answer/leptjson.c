@@ -16,7 +16,8 @@
 #define EXPECT(c, ch)       do { assert(*c->json == (ch)); c->json++; } while(0)
 #define ISDIGIT(ch)         ((ch) >= '0' && (ch) <= '9')
 #define ISDIGIT1TO9(ch)     ((ch) >= '1' && (ch) <= '9')
-#define PUTC(c, ch)         do { *(char*)lept_context_push(c, sizeof(char)) = (ch); } while(0)
+#define PUTC(c, ch)         \
+do { *(char*)lept_context_push(c, sizeof(char)) = (ch); } while(0)//返回的是新的栈顶指针 解指针之后赋值为当前的char值
 
 typedef struct {
     const char* json;
@@ -28,15 +29,15 @@ static void* lept_context_push(lept_context* c, size_t size) {
     void* ret;
     assert(size > 0);
     if (c->top + size >= c->size) {
-        if (c->size == 0)
+        if (c->size == 0)  /*如果top大于当前size的情况，且size 为0 则初始化*/
             c->size = LEPT_PARSE_STACK_INIT_SIZE;
-        while (c->top + size >= c->size)
+        while (c->top + size >= c->size)/*每次扩大1.5，直到c->top加size 小于栈的size */
             c->size += c->size >> 1;  /* c->size * 1.5 */
-        c->stack = (char*)realloc(c->stack, c->size);
+        c->stack = (char*)realloc(c->stack, c->size);/*重新分配内存 并把头指针赋值给stack*/
     }
-    ret = c->stack + c->top;
-    c->top += size;
-    return ret;
+    ret = c->stack + c->top;//返回新的栈顶地址
+    c->top += size;//把头的偏移量改变
+    return ret;//返回新栈顶的地址
 }
 
 static void* lept_context_pop(lept_context* c, size_t size) {
@@ -136,9 +137,9 @@ static int lept_parse_value(lept_context* c, lept_value* v) {
         case 't':  return lept_parse_literal(c, v, "true", LEPT_TRUE);
         case 'f':  return lept_parse_literal(c, v, "false", LEPT_FALSE);
         case 'n':  return lept_parse_literal(c, v, "null", LEPT_NULL);
-        default:   return lept_parse_number(c, v);
         case '"':  return lept_parse_string(c, v);
         case '\0': return LEPT_PARSE_EXPECT_VALUE;
+        default:   return lept_parse_number(c, v);
     }
 }
 
