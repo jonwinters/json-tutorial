@@ -1,9 +1,15 @@
 cmake_minimum_required (VERSION 2.6)
 project (leptjson_test C)
+    SET (CMAKE_C_COMPILER             "/usr/bin/clang")
+    SET (CMAKE_C_FLAGS                "-Wall -std=c99")
+    SET (CMAKE_C_FLAGS_DEBUG          "-g")
+    SET (CMAKE_C_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
+    SET (CMAKE_C_FLAGS_RELEASE        "-O4 -DNDEBUG")
+    SET (CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g")
 
-if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ansi -pedantic -Wall")
-endif()
+#if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ansi -pedantic -Wall")
+#endif()
 
 add_library(leptjson leptjson.c)
 add_executable(leptjson_test test.c)

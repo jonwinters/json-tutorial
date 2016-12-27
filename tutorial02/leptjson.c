@@ -1,7 +1,7 @@
 #include "leptjson.h"
 #include <assert.h>  /* assert() */
 #include <stdlib.h>  /* NULL, strtod() */
-
+#include <stdio.h>
 #define EXPECT(c, ch)       do { assert(*c->json == (ch)); c->json++; } while(0)
 
 typedef struct {
@@ -46,6 +46,10 @@ static int lept_parse_number(lept_context* c, lept_value* v) {
     char* end;
     /* \TODO validate number */
     v->n = strtod(c->json, &end);
+    /*
+    strtod convert char to float
+    */
+    printf("%f \n",v->n);
     if (c->json == end)
         return LEPT_PARSE_INVALID_VALUE;
     c->json = end;
